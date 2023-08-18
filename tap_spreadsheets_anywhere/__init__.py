@@ -70,7 +70,7 @@ def discover(config):
                                               max_records=max_sampling_read, max_files=max_sampled_files)
             schema = generate_schema(table_spec, samples)
             stream_metadata = []
-            key_properties = table_spec.get('key_properties', [])
+            key_properties = table_spec.get('key_properties', stream_metadata['md5'])
             streams.append(
                 CatalogEntry(
                     tap_stream_id=table_spec['name'],

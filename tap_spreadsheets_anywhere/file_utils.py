@@ -54,7 +54,7 @@ def write_file(target_filename, table_spec, schema, max_records=-1):
                 '_smart_source_file': target_filename,
                 # index zero, +1 for header row
                 '_smart_source_lineno': records_synced + 2,
-                '_smart_source_md5': md5_hash
+                '_md5': md5_hash
             }
 
             try:
