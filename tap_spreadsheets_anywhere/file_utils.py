@@ -16,6 +16,8 @@ import smart_open.ssh as ssh_transport
 from azure.storage.blob import BlobServiceClient
 import smart_open.ftp as ftp_transport
 
+import hashlib
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -45,11 +47,14 @@ def write_file(target_filename, table_spec, schema, max_records=-1):
     try:
         iterator = tap_spreadsheets_anywhere.format_handler.get_row_iterator(table_spec, target_uri)
         for row in iterator:
+            source_columns_data = "_".join([str(row[col]) for col in table_spec['columns']])  # Adjust this line as per your column names
+            md5_hash = hashlib.md5(source_columns_data.encode()).hexdigest()
             metadata = {
                 '_smart_source_bucket': _hide_credentials(table_spec['path']),
                 '_smart_source_file': target_filename,
                 # index zero, +1 for header row
-                '_smart_source_lineno': records_synced + 2
+                '_smart_source_lineno': records_synced + 2,
+                '_smart_source_md5': md5_hash
             }
 
             try:
@@ -85,6 +90,7 @@ def sample_file(table_spec, target_filename, sample_rate, max_records):
         iterator = tap_spreadsheets_anywhere.format_handler.get_row_iterator(table_spec, target_uri)
 
         for row in iterator:
+
             if (current_row % sample_rate) == 0:
                 samples.append(row)
 
