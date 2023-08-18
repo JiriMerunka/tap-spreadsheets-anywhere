@@ -90,7 +90,6 @@ def sample_file(table_spec, target_filename, sample_rate, max_records):
         iterator = tap_spreadsheets_anywhere.format_handler.get_row_iterator(table_spec, target_uri)
 
         for row in iterator:
-
             if (current_row % sample_rate) == 0:
                 samples.append(row)
 
